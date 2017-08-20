@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../Styles/App.css';
 import spotifyConfig from '../spotify_config.json';
+import ListTrackPlayers from './ListTrackPlayers';
 import ListArtists from './ListArtists';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -12,9 +13,8 @@ class App extends Component {
     this.state = {
       bandList: '',
       accessToken: this.getHashValue('access_token'),
-      artists: [],
-      artistObject: {},
-      tracks: {}
+      artists: {},
+      tracks: []
     };
     console.log(this.state);
   }
@@ -44,7 +44,7 @@ class App extends Component {
   }
 
   getArtistsByName = (bandNames) => {
-    let {accessToken,artists} = this.state;
+    let {accessToken,artists,tracks} = this.state;
     let axiosList = [];
     
     bandNames.forEach( (band) => {
@@ -56,17 +56,41 @@ class App extends Component {
     });
 
     axios.all(axiosList)
-    .then(axios.spread( (...args) => {
-      for(var i = 0 ; i < args.length; i++){
-        artists.push(args[i].data.artists.items[0]);
-      }
-      console.log('====================================');
-      console.log(...artists);
-      console.log('====================================');
-      this.setState({ artists: artists });
+      .then(axios.spread( (...args) => {
+        for(var i = 0 ; i < args.length; i++){
+          let artistObj = args[i].data.artists.items[0]
+          artists[artistObj.id] = artistObj;
+        }
+        this.setState({ artists: artists });
 
-    }))
 
+        
+        let axiosTracks = []
+        Object.keys(artists).forEach( (key) => {
+          axiosTracks.push(
+            axios.get('https://api.spotify.com/v1/artists/'+key+'/top-tracks?country=PT',{
+              'headers': {'Authorization': 'Bearer '+accessToken }
+            })
+          );
+        });
+
+        return axios.all(axiosTracks)
+      }))
+      .then( axios.spread( (...args) => {
+        console.log('====================================');
+        console.log(args);
+        console.log('====================================');
+        let trackData = [];
+        args.forEach( (t) => {
+          trackData.push(t.data.tracks);
+        });
+        this.setState({tracks: trackData});
+      }))
+      .catch( err => {
+        console.log('====================================');
+        console.log(err);
+        console.log('====================================');
+      })
   }
 
   showArtists = () => {
@@ -81,7 +105,7 @@ class App extends Component {
   }
 
   render() {
-    let {bandList, accessToken, artists} = this.state;
+    let {bandList, accessToken, artists, tracks} = this.state;
     let spotifyLoginUrl = 'https://accounts.spotify.com/authorize?client_id='+spotifyConfig.clientId+'&redirect_uri='+encodeURI(window.location.origin)+'/&response_type=token&state=14';
 
     return (
@@ -104,7 +128,10 @@ class App extends Component {
           style={{margin: '12px'}}
         />
         <div className="artist-list">
-          {(artists.length > 0) ? <ListArtists artists={artists} /> : null }
+          {(Object.keys(artists).length > 0) ? <ListArtists artists={artists} /> : null }
+        </div>
+        <div className="track-list">
+          { ( tracks.length > 0 ) ? <ListTrackPlayers tracks={tracks} /> : null }
         </div>
       </div>
     );

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Headset from 'material-ui/svg-icons/hardware/headset';
 
 export default class ListArtists extends Component{
@@ -25,14 +22,15 @@ export default class ListArtists extends Component{
         console.log('====================================');
         console.log(artists);
         console.log('====================================');
-        artists.forEach(function(element,i) {
+        Object.keys(artists).forEach(function(key,i) {
+            let a = artists[key];
             itemsList.push(
                 <ListItem
                 key={i}
-                primaryText={element.name}
-                leftAvatar={<Avatar src={element.images[0].url} />}
+                primaryText={a.name}
+                leftAvatar={<Avatar src={a.images[0].url} />}
                 rightIcon={<Headset />}
-                onClick={ () => { this.openArtistPage(element.external_urls.spotify)} }
+                onClick={ () => { this.openArtistPage(a.external_urls.spotify)} }
                 />
             );
             
