@@ -1,3 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Julius+Sans+One');
+
+html{
+  background-color: #222222;
+}
+body{
+  font-family: 'Julius Sans One', sans-serif;
+  background-color: #ffffff;
+  max-width: 650px;
+  height: auto;
+  margin: auto;
+}
+.input-bands{
+  padding: 10px 20px;
+}
+.header{
+  padding: 10px 20px;
+  text-align: center;
+  background-color: #444444;
+  color: #1ED760;  
+}
+.header h1{
+  font-weight: 900;
+  font-size: 72px;
+  margin: 10px 0;
+}
+.spotify-player-list{
+  padding: 20px 20px;
+  background-color: black;
+}
+.spotify-player-list h3{
+  color: white;
+
+}
 #band-list{
-  height: 600px;
+  width: 80%;
+  margin: auto;
+}
+.spotify-player-frame{
+  width: 46%;
+  min-width: 30%;
+  margin: 1% 2%;
+}
+.track-list{
+  transition: all 300ms ease-in-out;  
 }

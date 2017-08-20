@@ -11,7 +11,7 @@ class App extends Component {
   constructor(){
     super();
     this.state = {
-      bandList: '',
+      bandList: 'Ghost\nTame Impala\nBurial',
       accessToken: this.getHashValue('access_token'),
       artists: {},
       tracks: []
@@ -110,26 +110,32 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h3>OSCARIFY</h3>
-        { (accessToken == null ) ? <a href={spotifyLoginUrl}>Login</a> : null }
-        <TextField
-          id="band-list"
-          value={bandList}
-          onChange={(e) => { this.setState({bandList: e.target.value})} } 
-          hintText="Uma por parágrafo"
-          floatingLabelText="Lista de bandas"
-          multiLine={true}
-          rows={2}
-        /><br />
-        <RaisedButton 
-          label="Get Tracks" 
-          primary={true} 
-          onClick={this.fetchArtistsTracks} 
-          style={{margin: '12px'}}
-        />
-        <div className="artist-list">
-          {(Object.keys(artists).length > 0) ? <ListArtists artists={artists} /> : null }
+        <div className="header">
+          <h1>Oscarify</h1>
+          <h5>Type the bands, get the tracks</h5>
         </div>
+        { (accessToken == null ) ? <a href={spotifyLoginUrl}>Login</a> : null }
+        <div className="input-bands">
+          <TextField
+            id="band-list"
+            value={bandList}
+            onChange={(e) => { this.setState({bandList: e.target.value})} } 
+            hintText="Uma por parágrafo"
+            fullWidth={true}
+            floatingLabelText="Lista de bandas"
+            multiLine={true}
+            rows={2}
+          />
+          <RaisedButton 
+            label="Get Tracks" 
+            primary={true} 
+            onClick={this.fetchArtistsTracks} 
+            style={{margin: '12px'}}
+          />
+        </div>
+        {/*<div className="artist-list">
+          {(Object.keys(artists).length > 0) ? <ListArtists artists={artists} /> : null }
+        </div>*/}
         <div className="track-list">
           { ( tracks.length > 0 ) ? <ListTrackPlayers tracks={tracks} /> : null }
         </div>

@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 
 const SongFrame = (trackId, name = 'song') => {
     return (
-    <div>
-        <iframe
-        src={ encodeURI('https://open.spotify.com/embed?uri=spotify:track:'+trackId.trackId) }
-        width="300" 
-        height="80" 
-        frameBorder="0" 
-        allowTransparency="true">
-        </iframe>
-    </div>
+    <iframe
+    src={ encodeURI('https://open.spotify.com/embed?uri=spotify:track:'+trackId.trackId) }
+    className="spotify-player-frame"
+    width="300" 
+    height="80" 
+    frameBorder="0" 
+    allowTransparency="true">
+    </iframe>
     );
 };
 export default class ListTrackPlayers extends Component {
@@ -28,16 +27,14 @@ export default class ListTrackPlayers extends Component {
         console.log('====================================');
         console.log(tracks);
         console.log('====================================');
-        tracks[0].forEach( (t, i) => {
-            console.log('====================================');
-            console.log(t.id);
-            console.log('====================================');
+        tracks.forEach( (t, i) => {
             playerList.push(
-                <SongFrame key={i} trackId={t.id} />
+                <SongFrame key={i} trackId={t[0].id} />
             );
         });
         return(
-            <div>
+            <div className="spotify-player-list">
+                <h3>Songs:</h3>
                 {playerList}
             </div>
         );
