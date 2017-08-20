@@ -31,6 +31,7 @@ class App extends Component {
     console.log('====================================');
     console.log('Fetch Tracks.');
     console.log('====================================');
+    this.setState({ artists: {},tracks: []})
     let {accessToken, bandList} = this.state;
 
     //TODO Fetch artists Ids
