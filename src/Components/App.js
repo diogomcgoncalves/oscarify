@@ -13,6 +13,7 @@ class App extends Component {
       bandList: '',
       accessToken: this.getHashValue('access_token'),
       artists: [],
+      artistObject: {},
       tracks: {}
     };
     console.log(this.state);
@@ -31,8 +32,6 @@ class App extends Component {
     console.log('Fetch Tracks.');
     console.log('====================================');
     let {accessToken, bandList} = this.state;
-    let bandNames = [];
-    let artists = [];
 
     //TODO Fetch artists Ids
     if( accessToken !== ''){

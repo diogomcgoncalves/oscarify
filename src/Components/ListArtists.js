@@ -6,8 +6,6 @@ import Divider from 'material-ui/Divider';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Headset from 'material-ui/svg-icons/hardware/headset';
 
-
-
 export default class ListArtists extends Component{
     constructor(props){
         super();
@@ -15,6 +13,11 @@ export default class ListArtists extends Component{
             artists : props.artists
         };
     }
+
+    openArtistPage = (url) => {
+        window.open(encodeURI(url));
+    }
+    
 
     render(){
         let {artists} = this.state;
@@ -29,15 +32,14 @@ export default class ListArtists extends Component{
                 primaryText={element.name}
                 leftAvatar={<Avatar src={element.images[0].url} />}
                 rightIcon={<Headset />}
+                onClick={ () => { this.openArtistPage(element.external_urls.spotify)} }
                 />
             );
             
         }, this)
         return(
             <div style={{'maxWidth': '450px'}}>
-                <List>
-                    {itemsList}
-                </List>
+                <List children={itemsList} />
             </div>
         );
     }
