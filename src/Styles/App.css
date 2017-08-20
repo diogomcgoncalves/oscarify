@@ -44,3 +44,7 @@ body{
 .track-list{
   transition: all 300ms ease-in-out;  
 }
+.spotify-login{
+  text-align: center;
+  margin: 20px;
+}

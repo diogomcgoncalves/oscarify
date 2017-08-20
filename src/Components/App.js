@@ -11,7 +11,7 @@ class App extends Component {
   constructor(){
     super();
     this.state = {
-      bandList: 'Ghost\nTame Impala\nBurial',
+      bandList: 'Ghost\nTame Impala\nBurial\nQueens Of The Stone Age',
       accessToken: this.getHashValue('access_token'),
       artists: {},
       tracks: []
@@ -115,7 +115,9 @@ class App extends Component {
           <h1>Oscarify</h1>
           <h5>Type the bands, get the tracks</h5>
         </div>
-        { (accessToken == null ) ? <a href={spotifyLoginUrl}>Login</a> : null }
+        <div className="spotify-login">
+          { (accessToken == null ) ? <a href={spotifyLoginUrl}>Login with Spotify</a> : null }
+        </div>
         <div className="input-bands">
           <TextField
             id="band-list"
