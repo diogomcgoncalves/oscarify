@@ -4,20 +4,12 @@ import {List, ListItem} from 'material-ui/List';
 import Headset from 'material-ui/svg-icons/hardware/headset';
 
 export default class ListArtists extends Component{
-    constructor(props){
-        super();
-        this.state = {
-            artists : props.artists
-        };
-    }
-
     openArtistPage = (url) => {
         window.open(encodeURI(url));
     }
     
-
     render(){
-        let {artists} = this.state;
+        let {artists} = this.props;
         let itemsList = []
         console.log('====================================');
         console.log(artists);

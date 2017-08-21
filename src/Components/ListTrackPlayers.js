@@ -12,24 +12,31 @@ const SongFrame = (trackId, name = 'song') => {
     </iframe>
     );
 };
+
+const ErrorFrame = (searchValue) => (
+    <div className="error-frame">
+        <h5>{searchValue.searchValue}?</h5>
+    </div>
+)
 export default class ListTrackPlayers extends Component {
 
-    constructor(props){
-        super();
-        this.state = {
-            tracks: props.tracks
-        }
-    }
-
     render(){
-        let {tracks} = this.state;
-        let playerList = []
+        let {tracks, searchErrors} = this.props;
+        let playerList = [];
+        let keyVal = 0;
         console.log('====================================');
         console.log(tracks);
         console.log('====================================');
-        tracks.forEach( (t, i) => {
+        tracks.forEach( (t) => {
+            if( typeof(t) !== 'string' ){
+                playerList.push(
+                    <SongFrame key={keyVal++} trackId={t[0].id} />
+                );
+            }
+        });
+        searchErrors.forEach( (v) => {
             playerList.push(
-                <SongFrame key={i} trackId={t[0].id} />
+                <ErrorFrame key={keyVal++} searchValue={v} />                
             );
         });
         return(
