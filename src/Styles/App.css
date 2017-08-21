@@ -21,7 +21,7 @@ body{
 }
 .header h1{
   font-weight: 900;
-  font-size: 72px;
+  font-size: 52px;
   margin: 10px 0;
 }
 .spotify-player-list{
@@ -38,7 +38,7 @@ body{
 }
 .spotify-player-frame{
   width: 46%;
-  min-width: 30%;
+  min-width: 250px;
   margin: 1% 2%;
   background-color: #282828;
 }
@@ -54,7 +54,7 @@ body{
   width: 46%;
   height: 80px;
   max-height: 80%;
-  min-width: 30%;
+  min-width: 250px;
   margin: 1% 2%;
   text-align: center;
   background-color: #282828;

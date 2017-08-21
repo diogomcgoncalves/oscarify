@@ -60,11 +60,13 @@ class App extends Component {
     let axiosList = [];
     
     bandNames.forEach( (band) => {
-      axiosList.push(
-        axios.get('https://api.spotify.com/v1/search?q='+band+'&type=artist&limit=1',{
-          'headers': {'Authorization': 'Bearer '+accessToken }
-        })
-      );
+      if( band !== '' ){
+        axiosList.push(
+          axios.get('https://api.spotify.com/v1/search?q='+band+'&type=artist&limit=1',{
+            'headers': {'Authorization': 'Bearer '+accessToken }
+          })
+        );
+      }
     });
 
     axios.all(axiosList)
@@ -156,12 +158,12 @@ class App extends Component {
               <RaisedButton 
                 label="Get Tracks" 
                 primary={true} 
-                onClick={this.fetchArtistsTracks} 
+                onClick={this.fetchArtistsTracks}
                 style={{margin: '12px'}}
               />
             </div>
             <div className="track-list">
-              { ( tracks.length > 0 ) ? <ListTrackPlayers tracks={tracks} searchErrors={searchErrors} /> : null }
+              { ( tracks.length > 0 || searchErrors.length > 0 ) ? <ListTrackPlayers tracks={tracks} searchErrors={searchErrors} /> : null }
             </div>
           </div>
         ) : (
