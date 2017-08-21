@@ -169,7 +169,7 @@ class App extends Component {
         ) : (
           <div className="app-body">
             <div className="spotify-login">
-              { (accessToken == null ) ? <a href={spotifyLoginUrl}>Login with Spotify</a> : null }
+              { (accessToken == null ) ? <a href={spotifyLoginUrl}><div className="login-button">Login with Spotify</div></a> : null }
             </div>
           </div>
         ) }

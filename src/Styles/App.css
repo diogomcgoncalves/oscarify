@@ -10,6 +10,9 @@ body{
   height: auto;
   margin: auto;
 }
+.app-body{
+  contain: content;
+}
 .input-bands{
   padding: 10px 20px;
 }
@@ -45,9 +48,23 @@ body{
 .track-list{
   transition: all 300ms ease-in-out;  
 }
+.login-button{
+  padding: 1%;
+  font-weight: 900;
+  width: 50%;
+  min-width: 20%;
+  color: white;
+  background-color: #1ED760;
+  border-radius: 100px;
+}
 .spotify-login{
   text-align: center;
+  text-align: -webkit-center;
   margin: 20px;
+}
+.spotify-login a {
+  color: #FFFFFF;
+  text-decoration: none;
 }
 .error-frame{
   display: inline-block;
