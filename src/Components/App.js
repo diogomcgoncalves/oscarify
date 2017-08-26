@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../Styles/App.css';
 import spotifyConfig from '../spotify_config.json';
 import ListTrackPlayers from './ListTrackPlayers';
+import ArtistInput from './ArtistInput';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import queryString from 'query-string';
@@ -44,7 +45,7 @@ class App extends Component {
       let expiresAt = new Date();
       if( accessToken != null ){
         let timeIncrement = this.getHashValue('expires_in');
-        expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(timeIncrement) );
+        expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(timeIncrement,10) );
         console.log('====================================');
         console.log(expiresAt);
         console.log('====================================');
@@ -179,6 +180,7 @@ class App extends Component {
         { ( accessToken != null && accessToken !== '' ) ? (
           <div className="app-body">
             <div className="input-bands">
+              <ArtistInput accessToken={this.state.accessToken} />
               <TextField
                 id="band-list"
                 value={bandList}
