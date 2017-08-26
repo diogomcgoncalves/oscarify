@@ -20,7 +20,8 @@ export default class ArtistInput extends Component{
         this.getBands(searchText);
     };
     
-    handleNewRequest = () => {
+    handleNewRequest = (v) => {
+        this.props.onSelect(v);
         this.setState({
             searchText: '',
             suggestions: []
@@ -39,12 +40,9 @@ export default class ArtistInput extends Component{
             .then((res) => {
                 let auxList = [];
                 let dataSourceConfig = {};
-                console.log('====================================');
                 res.data.artists.items.forEach( b => {
-                    console.log(b.name);
                     auxList.push({text:b.name,value:b});
                 })
-                console.log('====================================');
                 this.setState({suggestions: auxList});
             })
             .catch(err => {
@@ -63,11 +61,14 @@ export default class ArtistInput extends Component{
         return (
             <div className="artist-input">
             <AutoComplete
-                hintText="Type 'r', case insensitive"
                 searchText={this.state.searchText}
+                underlineFocusStyle={{borderColor: '#2ebd59'}}
+                floatingLabelFocusStyle={{color: '#2ebd59'}}
+                floatingLabelText="Insert the band name"
                 onUpdateInput={this.handleUpdateInput}
                 onNewRequest={this.handleNewRequest}
                 dataSource={this.state.suggestions}
+                animated={true}
                 filter={AutoComplete.noFilter}
                 fullWidth={true}
                 openOnFocus={true}

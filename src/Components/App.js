@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../Styles/App.css';
 import spotifyConfig from '../spotify_config.json';
 import ListTrackPlayers from './ListTrackPlayers';
+import ListArtists from './ListArtists';
 import ArtistInput from './ArtistInput';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -36,7 +37,10 @@ class App extends Component {
 
   getAccessToken = (props) => {
     const { cookies } = props;
-    let accessToken = cookies.get('accessToken');
+    let accessToken = cookies.get('accessToken', {doNotParse:true});
+    console.log('====================================');
+    console.log( cookies.get('accessToken',{doNotParse:true}));
+    console.log('====================================');
     if( accessToken ){
       console.log('Has Token');
     }
@@ -44,13 +48,11 @@ class App extends Component {
       accessToken = this.getHashValue('access_token');
       let expiresAt = new Date();
       if( accessToken != null ){
-        let timeIncrement = this.getHashValue('expires_in');
-        expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(timeIncrement,10) );
-        console.log('====================================');
-        console.log(expiresAt);
-        console.log('====================================');
-        cookies.set('accessToken', accessToken, {expires: expiresAt });
-        cookies.set('loggedin', true,  {maxAge: 3600 });
+        let expiresIn = this.getHashValue('expires_in');
+        cookies.set('accessToken', accessToken, {
+          path: '/',
+          maxAge: expiresIn 
+        });
       }
       else{
         console.log('No token');
@@ -70,24 +72,57 @@ class App extends Component {
     return matches ? matches[1] : null;
   }
 
-  fetchArtistsTracks = (event) => {
+  getTracks = (event) => {
     console.log('====================================');
     console.log('Fetch Tracks.');
     console.log('====================================');
-    let {accessToken, bandList} = this.state;
-    this.setState({ 
-      artists: {},
+    let {accessToken, artists} = this.state;
+    this.setState({
       tracks: []
     });
 
-    //TODO Fetch artists Ids
     if( accessToken !== ''){
-      let bandNames = bandList.split('\n');
-
-      this.getArtistsByName(bandNames);
+      if( Object.keys(artists).length > 0 ){
+        this.fetchArtistsTracks(Object.keys(artists));
+      }
     }
+  }
 
-    //TODO Fetch Top Tracks
+  fetchArtistsTracks = (ids) => {
+    console.log('====================================');
+    console.log(ids);
+    console.log('====================================');
+    let axiosTracks = []
+    ids.forEach( (key) => {
+        axiosTracks.push(
+          axios.get('https://api.spotify.com/v1/artists/'+key+'/top-tracks?country=PT',{
+            'headers': {'Authorization': 'Bearer '+this.state.accessToken }
+          })
+        );
+    });
+
+    axios.all(axiosTracks)
+    .then( axios.spread( (...args) => {
+      console.log('====================================');
+      console.log(args);
+      console.log('====================================');
+      let trackData = [...this.state.tracks];
+      args.forEach( (t) => {
+        trackData.push(t.data.tracks);
+      });
+      this.setState({tracks: trackData});
+    }))
+    .catch( err => {
+      console.log('====================================');
+      console.log(err);
+      console.log('====================================');
+      if(err.status === 401){
+        const { cookies } = this.props;
+        cookies.remove('accessToken', {path: '/'});
+        window.location = window.location.origin
+      }
+    })
+
   }
 
   getArtistsByName = (bandNames) => {
@@ -167,6 +202,30 @@ class App extends Component {
 
   }
 
+  addArtistToList = (artist) => {
+    console.log('====================================');
+    console.log(artist);
+    console.log('====================================');
+    let auxArtists = this.state.artists;
+    if( artist ){
+      auxArtists[artist.value.id] = artist.value;
+      this.setState( {
+        artists : auxArtists
+      })
+    }
+  }
+
+  deleteArtistFromState = (id) => {
+    let {artists} = this.state;
+    delete artists[id];
+    console.log('====================================');
+    console.log(artists[id]);
+    console.log('====================================');
+    this.setState({
+      artists: artists
+    });
+  }
+
   render() {
     let {bandList, accessToken, artists, tracks, searchErrors} = this.state;
     let spotifyLoginUrl = 'https://accounts.spotify.com/authorize?client_id='+spotifyConfig.clientId+'&redirect_uri='+encodeURI(window.location.origin)+'/&response_type=token&state=14';
@@ -174,33 +233,32 @@ class App extends Component {
     return (
       <div className="App">
         <div className="header">
-          <h1>Oscarify</h1>
+          {/*<h1>Oscarify</h1>*/}
           <h5>Type the bands, get the tracks</h5>
         </div>
         { ( accessToken != null && accessToken !== '' ) ? (
           <div className="app-body">
             <div className="input-bands">
-              <ArtistInput accessToken={this.state.accessToken} />
-              <TextField
-                id="band-list"
-                value={bandList}
-                onChange={(e) => { this.setState({bandList: e.target.value})} } 
-                hintText="One per paragraph"
-                fullWidth={true}
-                floatingLabelText="Band List"
-                multiLine={true}
-                rows={2}
-                rowsMax={5}
+              <ArtistInput 
+                onSelect={this.addArtistToList} 
+                accessToken={this.state.accessToken} 
+              />
+              <ListArtists 
+                artists={this.state.artists} 
+                onDelete={this.deleteArtistFromState}
+                displayChips={true}
               />
               <RaisedButton 
-                label="Get Tracks" 
-                primary={true} 
-                onClick={this.fetchArtistsTracks}
+                label="Get Tracks"
+                labelColor="#ffffff"
+                backgroundColor="#2ebd59"
+                onClick={this.getTracks}
                 style={{margin: '12px'}}
               />
               <RaisedButton 
                 label="Logout" 
-                primary={true} 
+                labelColor="#ffffff"
+                backgroundColor="#444444"
                 onClick={this.logout}
                 style={{margin: '12px',float:'right'}}
               />
