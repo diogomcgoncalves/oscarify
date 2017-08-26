@@ -4,7 +4,6 @@ import spotifyConfig from '../spotify_config.json';
 import ListTrackPlayers from './ListTrackPlayers';
 import ListArtists from './ListArtists';
 import ArtistInput from './ArtistInput';
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import queryString from 'query-string';
 import axios from 'axios';
@@ -22,7 +21,6 @@ class App extends Component {
     super();
     let access_token = this.getAccessToken(props);
     this.state = {
-      bandList: '',
       accessToken: access_token,
       artists: {},
       tracks: {},
@@ -46,7 +44,6 @@ class App extends Component {
     }
     else{
       accessToken = this.getHashValue('access_token');
-      let expiresAt = new Date();
       if( accessToken != null ){
         let expiresIn = this.getHashValue('expires_in');
         cookies.set('accessToken', accessToken, {
@@ -227,13 +224,13 @@ class App extends Component {
   }
 
   render() {
-    let {bandList, accessToken, artists, tracks, searchErrors} = this.state;
+    let {accessToken, tracks, searchErrors} = this.state;
     let spotifyLoginUrl = 'https://accounts.spotify.com/authorize?client_id='+spotifyConfig.clientId+'&redirect_uri='+encodeURI(window.location.origin)+'/&response_type=token&state=14';
 
     return (
       <div className="App">
         <div className="header">
-          {/*<h1>Oscarify</h1>*/}
+          <h1>Oscarify</h1>
           <h5>Type the bands, get the tracks</h5>
         </div>
         { ( accessToken != null && accessToken !== '' ) ? (
