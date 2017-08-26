@@ -2,23 +2,26 @@ import React, { Component } from 'react';
 import '../Styles/App.css';
 import spotifyConfig from '../spotify_config.json';
 import ListTrackPlayers from './ListTrackPlayers';
-import ListArtists from './ListArtists';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import queryString from 'query-string';
 import axios from 'axios';
-
-
-/*<div className="artist-list">
-  {(Object.keys(artists).length > 0) ? <ListArtists artists={artists} /> : null }
-</div>*/
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+ 
 
 class App extends Component {
-  constructor(){
+
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
+
+  constructor(props){
     super();
+    let access_token = this.getAccessToken(props);
     this.state = {
       bandList: '',
-      accessToken: this.getHashValue('access_token'),
+      accessToken: access_token,
       artists: {},
       tracks: {},
       searchErrors: []
@@ -27,6 +30,38 @@ class App extends Component {
   }
 
   componentWillMount(){
+   
+  }
+
+  getAccessToken = (props) => {
+    const { cookies } = props;
+    let accessToken = cookies.get('accessToken');
+    if( accessToken ){
+      console.log('Has Token');
+    }
+    else{
+      accessToken = this.getHashValue('access_token');
+      let expiresAt = new Date();
+      if( accessToken != null ){
+        let timeIncrement = this.getHashValue('expires_in');
+        expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(timeIncrement) );
+        console.log('====================================');
+        console.log(expiresAt);
+        console.log('====================================');
+        cookies.set('accessToken', accessToken, {expires: expiresAt });
+        cookies.set('loggedin', true,  {maxAge: 3600 });
+      }
+      else{
+        console.log('No token');
+      }
+    }
+    return accessToken;
+  }
+
+  logout = () => {
+    const { cookies } = this.props;
+    cookies.remove('accessToken');
+    window.location = window.location.origin;
   }
 
   getHashValue = (key) => {
@@ -89,7 +124,7 @@ class App extends Component {
 
         let axiosTracks = []
         Object.keys(artists).forEach( (key) => {
-          if( artists[key] != 0 ){
+          if( artists[key] !== 0 ){
             axiosTracks.push(
               axios.get('https://api.spotify.com/v1/artists/'+key+'/top-tracks?country=PT',{
                 'headers': {'Authorization': 'Bearer '+accessToken }
@@ -141,7 +176,7 @@ class App extends Component {
           <h1>Oscarify</h1>
           <h5>Type the bands, get the tracks</h5>
         </div>
-        { ( accessToken != null && accessToken !== '') ? (
+        { ( accessToken != null && accessToken !== '' ) ? (
           <div className="app-body">
             <div className="input-bands">
               <TextField
@@ -161,6 +196,12 @@ class App extends Component {
                 onClick={this.fetchArtistsTracks}
                 style={{margin: '12px'}}
               />
+              <RaisedButton 
+                label="Logout" 
+                primary={true} 
+                onClick={this.logout}
+                style={{margin: '12px',float:'right'}}
+              />
             </div>
             <div className="track-list">
               { ( tracks.length > 0 || searchErrors.length > 0 ) ? <ListTrackPlayers tracks={tracks} searchErrors={searchErrors} /> : null }
@@ -179,4 +220,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withCookies(App);

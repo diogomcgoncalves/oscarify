@@ -4,10 +4,13 @@ import './Styles/index.css';
 import App from './Components/App';
 import registerServiceWorker from './registerServiceWorker';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { CookiesProvider } from 'react-cookie';
 
 const MainApp = () => (
     <MuiThemeProvider >
-        <App />
+        <CookiesProvider>
+            <App />
+        </CookiesProvider>
     </MuiThemeProvider>
 );
 

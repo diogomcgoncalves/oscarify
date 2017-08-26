@@ -56,11 +56,13 @@ body{
   color: white;
   background-color: #1ED760;
   border-radius: 100px;
+  margin: auto;
 }
 .spotify-login{
   text-align: center;
   text-align: -webkit-center;
-  margin: 20px;
+  text-align: -moz-center;
+  padding: 20px;
 }
 .spotify-login a {
   color: #FFFFFF;

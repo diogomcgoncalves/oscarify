@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 const SongFrame = (trackId, name = 'song') => {
     return (
     <iframe
+    title="track-frame"
     src={ encodeURI('https://open.spotify.com/embed?uri=spotify:track:'+trackId.trackId) }
     className="spotify-player-frame"
     width="300" 
